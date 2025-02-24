@@ -10,6 +10,8 @@ license-file:       LICENSE
 copyright:          (c) 2025 0y2k
 author:             0y2k <0x0y2k@gmail.com>
 maintainer:         0y2k <0x0y2k@gmail.com>
+homepage:           https://github.com/0y2k/fractaltext-haskell
+bug-reports:        https://github.com/0y2k/fractaltext-haskell/issues
 build-type:         Simple
 extra-doc-files:
     CHANGELOG.md,
@@ -19,6 +21,10 @@ extra-source-files:
     vendor/github.com/0y2k/fractaltext-test/load/**/load_in.ft
     vendor/github.com/0y2k/fractaltext-test/load/**/load_out.json
     vendor/github.com/0y2k/fractaltext-test/load/**/load_err.json
+
+source-repository head
+    type:     git
+    location: https://github.com/0y2k/fractaltext-haskell
 
 common depends
     build-depends:
