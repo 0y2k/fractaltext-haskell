@@ -33,7 +33,7 @@ data Line
   = Line'Blank
   | Line'Comment Int T.Text
   | Line'Key Int Key
-  | Line'String Int T.Text
+  | Line'Value Int T.Text
   deriving (Generic, Eq, Show)
 
 data SurplusLine

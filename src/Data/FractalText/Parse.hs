@@ -21,7 +21,7 @@ import qualified Streaming.Prelude as S
 
 data ValidLine
   = ValidLine'Key (V.Vector SurplusLine) Int Key
-  | ValidLine'String (V.Vector SurplusLine) Int T.Text
+  | ValidLine'Value (V.Vector SurplusLine) Int T.Text
   deriving (Generic, Eq, Show)
 
 data ParseError
@@ -43,7 +43,7 @@ toLine ts =
         '#':ts1 -> Right $ Line'Comment indentLevel $ T.pack ts1
         ':':ts1 -> Right $ Line'Key indentLevel $ ST.pack ts1
         '\t':_ts1 -> Left ParseError'InvalidIndent
-        ts1 -> Right $ Line'String indentLevel $ T.pack ts1
+        ts1 -> Right $ Line'Value indentLevel $ T.pack ts1
 
 loadLine :: TL.Text -> S.Stream (S.Of Line) (Either ParseError) ()
 loadLine = S.mapM toLine . SP.folds (<>) T.empty id . splitLines . fromLazyText
@@ -61,13 +61,13 @@ toValidLine s = go s []
       Right (Line'Key i k, s1) -> do
         S.yield $ ValidLine'Key (V.fromList $ reverse ys) i k
         go s1 []
-      Right (Line'String i ts, s1) -> do
-        S.yield $ ValidLine'String (V.fromList $ reverse ys) i ts
+      Right (Line'Value i ts, s1) -> do
+        S.yield $ ValidLine'Value (V.fromList $ reverse ys) i ts
         go s1 []
 
 validLine'Indent :: ValidLine -> Int
 validLine'Indent (ValidLine'Key _sls i _k) = i
-validLine'Indent (ValidLine'String _sls i _ts) = i
+validLine'Indent (ValidLine'Value _sls i _ts) = i
 
 parse :: TL.Text -> Either ParseError Document
 parse ts0 = runParser (readItem [EQ] 0) $ toValidLine $ loadLine ts0
@@ -87,7 +87,7 @@ parse ts0 = runParser (readItem [EQ] 0) $ toValidLine $ loadLine ts0
           $ lift $ Left ParseError'InvalidIndent
         des <- readDict j
         return $ ItemA'Dict j des
-      Just (ValidLine'String _sls j _ts) -> do
+      Just (ValidLine'Value _sls j _ts) -> do
         unless ((i `compare` j) `elem` cs)
           $ lift $ Left ParseError'InvalidIndent
         es <- readList j
@@ -123,7 +123,7 @@ parse ts0 = runParser (readItem [EQ] 0) $ toValidLine $ loadLine ts0
       ml <- SP.draw
       case ml of
         Nothing -> return ys
-        Just l@(ValidLine'String sls j ts) -> case i `compare` j of
+        Just l@(ValidLine'Value sls j ts) -> case i `compare` j of
           EQ ->
             let (pss, q) = processString ts
              in go $ ListElemA sls q pss : ys

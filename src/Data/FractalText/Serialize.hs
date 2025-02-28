@@ -86,7 +86,7 @@ dumpLine doc@(ia, sls0)
     f (SurplusLine'Comment i ts) = Line'Comment i ts
   dumpListElem i (ListElemA sls q ts) = do
     dumpSurplusLines sls
-    S.yield $ Line'String i
+    S.yield $ Line'Value i
       $ if q then T.singleton '\"' <> ts <> T.singleton '\"' else ts
   dumpDictElem i (DictElemA sls k v) = do
     dumpSurplusLines sls
