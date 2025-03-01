@@ -50,6 +50,8 @@ library
     exposed-modules:
         Data.FractalText,
         Data.FractalText.Annotate,
+        Data.FractalText.Decode,
+        Data.FractalText.Encode,
         Data.FractalText.From,
         Data.FractalText.Parse,
         Data.FractalText.Serialize,
