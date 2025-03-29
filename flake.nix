@@ -3,6 +3,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     haskell-flake.url = "github:srid/haskell-flake";
+    self.submodules = true; # requires nix-2.27
   };
   outputs = inputs@{ self, nixpkgs, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
@@ -19,6 +20,7 @@
             fileset = lib.fileset.unions [
               ./src
               ./test
+              ./vendor
               ./fractaltext.cabal
               ./LICENSE
               ./CHANGELOG.md
@@ -64,6 +66,7 @@
 
         # haskell-flake doesn't set the default package, but you can do it here.
         packages.default = self'.packages.fractaltext;
+        checks.default = self'.packages.fractaltext;
       };
     };
 }
